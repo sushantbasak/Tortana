@@ -5,6 +5,7 @@ const port = appSettings.port || 3000;
 
 const {getAudioTranscription} = require('./api/service/speechToText.service');
 const {getChatCompletion} = require('./api/service/chatCompletion.service');
+const {getAudioFromText} = require('./api/service/textToSpeech.service');
 
 const init = async () => {
   try {
@@ -33,15 +34,21 @@ const init = async () => {
       });
     });
 
-    const prompt = [];
+    // const prompt = [];
 
-    const val = await getAudioTranscription({fileName: 'sample.wav'});
+    // let val = await getAudioTranscription({fileName: 'sample.wav'});
 
-    prompt.push({'role': 'user', 'content': val.result});
+    // prompt.push({'role': 'user', 'content': val.result});
 
-    const generateChat = await getChatCompletion(prompt);
+    // const {result: generateChat} = await getChatCompletion(prompt);
 
-    console.log(generateChat);
+    // prompt.push(generateChat);
+
+    // const text = generateChat.content;
+
+    // val = await getAudioFromText({text, fileName: 'hello.mp3'});
+
+    // console.log(val);
 
     return app;
   } catch (ex) {
