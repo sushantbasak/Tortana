@@ -27,13 +27,36 @@ const whispherAPIProvider = async ({fileName}) => {
 
     return {status: 'Success', result: resp.data.text};
   } catch (ex) {
-    console.log(ex);
+    console.log(ex.response.data);
 
     return {status: 'Error', result: null};
   }
 };
 
-const chatGPTProvider = async () => {};
+const chatGPTProvider = async (prompt) => {
+  try {
+    const url = APIURL.openAI.chatGPT;
+
+    const resp = await axios.post(
+      url,
+      {
+        'model': 'gpt-3.5-turbo',
+        'messages': prompt,
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    return {status: 'Success', result: resp.data.choices[0].message};
+  } catch (ex) {
+    console.log(ex.response.data);
+
+    return {status: 'Error', result: null};
+  }
+};
 
 module.exports = {
   whispherAPIProvider,

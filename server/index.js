@@ -4,6 +4,7 @@ const appSettings = require('./config');
 const port = appSettings.port || 3000;
 
 const {getAudioTranscription} = require('./api/service/speechToText.service');
+const {getChatCompletion} = require('./api/service/chatCompletion.service');
 
 const init = async () => {
   try {
@@ -32,9 +33,15 @@ const init = async () => {
       });
     });
 
+    const prompt = [];
+
     const val = await getAudioTranscription({fileName: 'sample.wav'});
 
-    console.log(val);
+    prompt.push({'role': 'user', 'content': val.result});
+
+    const generateChat = await getChatCompletion(prompt);
+
+    console.log(generateChat);
 
     return app;
   } catch (ex) {
