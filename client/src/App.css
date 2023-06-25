@@ -1,0 +1,39 @@
+.audio-recorder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.audio-controls {
+  margin-bottom: 10px;
+}
+
+.btn-start,
+.btn-stop,
+.btn-save {
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-start {
+  background-color: #5cb85c;
+}
+
+.btn-stop {
+  background-color: #d9534f;
+}
+
+.btn-save {
+  background-color: #428bca;
+}
+
+.btn-start:hover,
+.btn-stop:hover,
+.btn-save:hover {
+  opacity: 0.8;
+}

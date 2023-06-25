@@ -2,6 +2,11 @@ const express = require('express');
 const api = require('./api');
 const appSettings = require('./config');
 const port = appSettings.port || 3000;
+const cors = require('cors');
+const multer = require('multer');
+
+const pwd = process.cwd();
+const upload = multer({dest: pwd});
 
 const {getAudioTranscription} = require('./api/service/speechToText.service');
 const {getChatCompletion} = require('./api/service/chatCompletion.service');
@@ -11,8 +16,16 @@ const init = async () => {
   try {
     const app = express();
 
+    app.use(cors());
+
     const jsonParser = express.json();
     app.use(jsonParser);
+
+    app.post('/profile', upload.single('audio-file'), function (req, res) {
+      console.log(req.file);
+      console.log(req.body);
+      res.send('SuccessFul Upload');
+    });
 
     app.use('/api', api);
 

@@ -24,10 +24,24 @@ const AudioRecorder = () => {
       });
   };
 
+  const sendAudioFileToServer = (file) => {
+    const formData = new FormData();
+
+    formData.append('audio-file', file);
+    return fetch('http://localhost:6222/profile', {
+      method: 'POST',
+      body: formData,
+    });
+  };
+
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
     setIsRecording(false);
     stopTimer();
+
+    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+    sendAudioFileToServer(audioBlob);
+    setAudioChunks([]);
   };
 
   const handleDataAvailable = (event) => {
@@ -45,17 +59,6 @@ const AudioRecorder = () => {
   const stopTimer = () => {
     clearInterval(timerRef.current);
     setTimer(0);
-  };
-
-  const handleSaveAudio = () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-    const url = URL.createObjectURL(audioBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'recorded_audio.webm';
-    link.click();
-    URL.revokeObjectURL(url);
-    setAudioChunks([]);
   };
 
   useEffect(() => {
@@ -80,11 +83,6 @@ const AudioRecorder = () => {
         )}
       </div>
       {isRecording && <div className="timer">Recording: {timer} seconds</div>}
-      {audioChunks.length > 0 && (
-        <button className="btn-save" onClick={handleSaveAudio}>
-          Save Audio
-        </button>
-      )}
     </div>
   );
 };
