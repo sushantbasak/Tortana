@@ -3,7 +3,7 @@ const api = require('./api');
 const appSettings = require('./config');
 const port = appSettings.port || 3000;
 
-const {whispherAPIProvider} = require('./api/provider/openAi.provider');
+const {getAudioTranscription} = require('./api/service/speechToText.service');
 
 const init = async () => {
   try {
@@ -32,7 +32,7 @@ const init = async () => {
       });
     });
 
-    const val = await whispherAPIProvider({fileName: 'sample.wav'});
+    const val = await getAudioTranscription({fileName: 'sample.wav'});
 
     console.log(val);
 
