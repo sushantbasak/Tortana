@@ -1,8 +1,9 @@
 const express = require('express');
 const api = require('./api');
-require('dotenv').config();
+const appSettings = require('./config');
+const port = appSettings.port || 3000;
 
-const port = process.env.PORT || 3000;
+const {whispherAPIProvider} = require('./api/provider/openAi.provider');
 
 const init = async () => {
   try {
@@ -21,7 +22,7 @@ const init = async () => {
     });
 
     app.get('/health', (req, res) => {
-      res.status(200).send({ status: 'Success', msg: 'UP' });
+      res.status(200).send({status: 'Success', msg: 'UP'});
     });
 
     app.get('*', function (req, res) {
@@ -30,6 +31,10 @@ const init = async () => {
         msg: 'Requested Page does not exist',
       });
     });
+
+    const val = await whispherAPIProvider({fileName: 'sample.wav'});
+
+    console.log(val);
 
     return app;
   } catch (ex) {
