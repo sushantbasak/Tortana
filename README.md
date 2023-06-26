@@ -2,7 +2,11 @@
  A web-based application built using Node.js that provides an interactive conversational experience for users.
 
 ## :memo: Description
-Tortana is a web-based Node.js application that enables users to interact with an AI-powered virtual assistant through speech. It utilizes the Whisper API to convert speech to text, generates prompts for the ChatGPT API, and converts responses back to speech. This seamless process delivers natural and accurate conversational experiences. Tortana's powerful combination of APIs empowers voice-driven applications and virtual assistants with intelligent, context-aware responses and enhances user engagement.
+Tortana is a web-based Node.js application that enables users to interact with an AI-powered virtual assistant through speech. 
+
+It utilizes the Whisper API to convert speech to text, generates prompts for the ChatGPT API, and converts responses back to speech. This seamless process delivers natural and accurate conversational experiences. 
+
+Tortana's powerful combination of APIs empowers voice-driven applications and virtual assistants with intelligent, context-aware responses and enhances user engagement.
 
 ![image](https://github.com/sushantbasak/Tortana/assets/56016930/a5f78be8-7434-4d0e-8860-81c3d29e30f2)
 
