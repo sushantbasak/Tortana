@@ -7,11 +7,11 @@ const getAudioFromText = async ({text, fileName}) => {
 
     await gtts.save(fileName);
 
-    return {status: 'Success', file: fileName};
+    return {status: 'SUCCESS', file: fileName};
   } catch (ex) {
-    console.log(ex);
+    console.log(ex.message);
 
-    return {status: 'Error', file: null};
+    return {status: 'ERROR', file: null};
   }
 };
 

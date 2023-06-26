@@ -24,11 +24,11 @@ const whispherAPIProvider = async ({fileName}) => {
       }
     );
 
-    return {status: 'Success', result: resp.data.text};
+    return {status: 'SUCCESS', result: resp.data.text};
   } catch (ex) {
-    console.log(ex);
+    console.log(ex.message);
 
-    return {status: 'Error', result: null};
+    return {status: 'ERROR', result: null};
   }
 };
 
@@ -50,11 +50,11 @@ const chatGPTProvider = async (prompt) => {
       }
     );
 
-    return {status: 'Success', result: resp.data.choices[0].message};
+    return {status: 'SUCCESS', result: resp.data.choices[0].message};
   } catch (ex) {
-    console.log(ex);
+    console.log(ex.message);
 
-    return {status: 'Error', result: null};
+    return {status: 'ERROR', result: null};
   }
 };
 

@@ -25,37 +25,49 @@ const createAudio = async (req, res) => {
 
     const inputFile = req.file.path;
 
-    console.log('Req mil gaya');
+    // console.log('Req mil gaya');
 
-    let val = await getAudioTranscription({fileName: inputFile});
+    let resp = await getAudioTranscription({fileName: inputFile});
 
-    console.log(val, 'Whisper Complete');
+    if (resp.status === 'ERROR')
+      throw new Error('Speech to Transcript API (Whispher)  is not working');
+
+    // console.log(val, 'Whisper Complete');
 
     prompt.push({'role': 'user', 'content': val.result});
 
-    console.log(prompt, 'Intitial Prompt Value');
+    // console.log(prompt, 'Intitial Prompt Value');
 
-    const {result: generateChat} = await getChatCompletion(prompt);
+    resp = await getChatCompletion(prompt);
 
-    console.log(generateChat, 'Generated Prompt');
+    if (resp.status === 'ERROR')
+      throw new Error(
+        'Response Generator LLM Model API (Chat GPT) is not working'
+      );
+
+    const generateChat = resp.result;
+    // console.log(generateChat, 'Generated Prompt');
 
     prompt.push(generateChat);
 
-    console.log(prompt);
+    // console.log(prompt);
 
     const text = generateChat.content;
 
     const outputFile = path + '/data/result/' + req.file.filename;
 
-    console.log(text, 'Text De rhe hai');
+    // console.log(text, 'Text De rhe hai');
 
     val = await getAudioFromText({text, fileName: outputFile});
 
-    console.log(val, 'File Save ho gaya');
+    if (resp.status === 'ERROR')
+      throw new Error('Speech from Text API (GTTS) is not working');
+
+    // console.log(val, 'File Save ho gaya');
 
     res.status(200).send('ok');
   } catch (ex) {
-    console.log(ex);
+    console.log(ex.message);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -68,27 +80,32 @@ const getAudio = (req, res) => {
     res.status(400).send('Requires Range header');
   }
 
-  console.log('Load File');
+  try {
+    // console.log('Load File');
 
-  const audioPath = path + '/data/result/' + id;
-  const audioSize = fs.statSync(audioPath).size;
-  // console.log("size of audio is:", audioSize);
-  const CHUNK_SIZE = 10 ** 6; //1 MB
-  console.log(range);
-  const start = Number(range.replace(/\D/g, ''));
-  // const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+    const audioPath = path + '/data/result/' + id;
+    const audioSize = fs.statSync(audioPath).size;
+    // console.log("size of audio is:", audioSize);
+    const CHUNK_SIZE = 10 ** 6; //1 MB
+    // console.log(range);
+    const start = Number(range.replace(/\D/g, ''));
+    // const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
 
-  const end = audioSize - 1;
-  const contentLength = end - start + 1;
-  const headers = {
-    'Content-Range': `bytes ${start}-${end}/${audioSize}`,
-    'Accept-Ranges': 'bytes',
-    'Content-Length': contentLength,
-    'Content-Type': 'audio/mp3',
-  };
-  res.writeHead(206, headers);
-  const audioStream = fs.createReadStream(audioPath, {start, end});
-  audioStream.pipe(res);
+    const end = audioSize - 1;
+    const contentLength = end - start + 1;
+    const headers = {
+      'Content-Range': `bytes ${start}-${end}/${audioSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': contentLength,
+      'Content-Type': 'audio/mp3',
+    };
+    res.writeHead(206, headers);
+    const audioStream = fs.createReadStream(audioPath, {start, end});
+    audioStream.pipe(res);
+  } catch (ex) {
+    console.log(ex.message);
+    res.status(400).send('Bad Request');
+  }
 };
 
 router.post('/', upload.single('audio_data'), createAudio);

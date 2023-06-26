@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 router.use('/health', async (req, res) => {
   res.status(200).send({
-    status: 'Success',
+    status: 'SUCCESS',
     msg: 'API UP',
   });
 });
