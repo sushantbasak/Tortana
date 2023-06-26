@@ -4,9 +4,7 @@ const appSettings = require('./config');
 const port = appSettings.port || 3000;
 const cors = require('cors');
 const multer = require('multer');
-
-const pwd = process.cwd();
-const upload = multer({dest: pwd});
+const fs = require('fs');
 
 const {getAudioTranscription} = require('./api/service/speechToText.service');
 const {getChatCompletion} = require('./api/service/chatCompletion.service');
@@ -18,13 +16,53 @@ const init = async () => {
 
     app.use(cors());
 
+    app.use(express.static('./'));
+
     const jsonParser = express.json();
     app.use(jsonParser);
 
-    app.post('/profile', upload.single('audio-file'), function (req, res) {
+    // storage
+    const Storage = multer.diskStorage({
+      destination: process.cwd() + '/data/uploads',
+      filename: (req, file, cb) => {
+        cb(null, file.originalname);
+      },
+    });
+
+    const upload = multer({
+      storage: Storage,
+    });
+
+    app.get('/audio/:id', function (req, res) {
+      const id = req.params.id;
+
+      if (id == null) console.log('Hello');
+      const range = req.headers.range;
+      if (!range) {
+        res.status(400).send('Requires Range header');
+      }
+      const path = process.cwd() + '/data/result/' + id;
+      const audioPath = path;
+      const audioSize = fs.statSync(audioPath).size;
+      // console.log("size of audio is:", audioSize);
+      const CHUNK_SIZE = 10 ** 6; //1 MB
+      const start = Number(range.replace(/\D/g, ''));
+      const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+      const contentLength = end - start + 1;
+      const headers = {
+        'Content-Range': `bytes ${start}-${end}/${audioSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': contentLength,
+        'Content-Type': 'audio/mp3',
+      };
+      res.writeHead(206, headers);
+      const audioStream = fs.createReadStream(audioPath, {start, end});
+      audioStream.pipe(res);
+    });
+
+    app.post('/audio', upload.single('audio_data'), function (req, res) {
       console.log(req.file);
-      console.log(req.body);
-      res.send('SuccessFul Upload');
+      res.status(200).send('ok');
     });
 
     app.use('/api', api);
