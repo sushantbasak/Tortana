@@ -26,12 +26,8 @@ Clone the Tortana repository, and generate openAI API key and pass it into env f
 $ git clone https://github.com/sushantbasak/Tortana
 # navigate to the project's directory
 $ cd Tortana
-# install the dependencies for client
-$ cd server/ && npm install
 # install server dependencies
-$ cd server && npm install
-# start frontend
-$ npm start
+$ cd server/ && npm install
 # start backend
 $ npm start
 ```
