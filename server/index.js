@@ -12,6 +12,7 @@ const {getAudioFromText} = require('./api/service/textToSpeech.service');
 
 const init = async () => {
   try {
+    const path = process.cwd();
     const app = express();
 
     app.use(cors());
@@ -23,7 +24,7 @@ const init = async () => {
 
     // storage
     const Storage = multer.diskStorage({
-      destination: process.cwd() + '/data/uploads',
+      destination: path + '/data/uploads',
       filename: (req, file, cb) => {
         cb(null, file.originalname);
       },
@@ -36,13 +37,12 @@ const init = async () => {
     app.get('/audio/:id', function (req, res) {
       const id = req.params.id;
 
-      if (id == null) console.log('Hello');
       const range = req.headers.range;
       if (!range) {
         res.status(400).send('Requires Range header');
       }
-      const path = process.cwd() + '/data/result/' + id;
-      const audioPath = path;
+
+      const audioPath = path + '/data/result/' + id;
       const audioSize = fs.statSync(audioPath).size;
       // console.log("size of audio is:", audioSize);
       const CHUNK_SIZE = 10 ** 6; //1 MB
@@ -60,9 +60,43 @@ const init = async () => {
       audioStream.pipe(res);
     });
 
-    app.post('/audio', upload.single('audio_data'), function (req, res) {
-      console.log(req.file);
-      res.status(200).send('ok');
+    const prompt = [];
+
+    app.post('/audio', upload.single('audio_data'), async (req, res) => {
+      try {
+        const inputFile = req.file.path;
+
+        // console.log('Req mil gaya');
+
+        let val = await getAudioTranscription({fileName: inputFile});
+
+        // console.log(val, 'Whisper Complete');
+
+        prompt.push({'role': 'user', 'content': val.result});
+
+        // console.log(prompt, 'Intitial Prompt Value');
+
+        const {result: generateChat} = await getChatCompletion(prompt);
+
+        // console.log(generateChat, 'Generated Prompt');
+
+        prompt.push(generateChat);
+
+        const text = generateChat.content;
+
+        const outputFile = path + '/data/result/' + req.file.filename;
+
+        // console.log(text, 'Text De rhe hai');
+
+        val = await getAudioFromText({text, fileName: outputFile});
+
+        // console.log(val);
+
+        res.status(200).send('ok');
+      } catch (ex) {
+        console.log(ex);
+        res.status(500).send('Internal Server Error');
+      }
     });
 
     app.use('/api', api);
@@ -84,22 +118,6 @@ const init = async () => {
         msg: 'Requested Page does not exist',
       });
     });
-
-    // const prompt = [];
-
-    // let val = await getAudioTranscription({fileName: 'sample.wav'});
-
-    // prompt.push({'role': 'user', 'content': val.result});
-
-    // const {result: generateChat} = await getChatCompletion(prompt);
-
-    // prompt.push(generateChat);
-
-    // const text = generateChat.content;
-
-    // val = await getAudioFromText({text, fileName: 'hello.mp3'});
-
-    // console.log(val);
 
     return app;
   } catch (ex) {

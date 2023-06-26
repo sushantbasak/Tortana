@@ -7,8 +7,7 @@ const apiKey = appSettings.apiKey.openAI;
 
 const whispherAPIProvider = async ({fileName}) => {
   try {
-    const path = process.cwd() + '/' + fileName;
-    const fileStream = fs.createReadStream(path);
+    const fileStream = fs.createReadStream(fileName);
     const url = APIURL.openAI.whispher;
 
     const resp = await axios.post(
@@ -27,7 +26,7 @@ const whispherAPIProvider = async ({fileName}) => {
 
     return {status: 'Success', result: resp.data.text};
   } catch (ex) {
-    console.log(ex.response.data);
+    console.log(ex);
 
     return {status: 'Error', result: null};
   }
@@ -53,7 +52,7 @@ const chatGPTProvider = async (prompt) => {
 
     return {status: 'Success', result: resp.data.choices[0].message};
   } catch (ex) {
-    console.log(ex.response.data);
+    console.log(ex);
 
     return {status: 'Error', result: null};
   }

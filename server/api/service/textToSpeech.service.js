@@ -2,13 +2,12 @@ const gTTS = require('gtts');
 
 const getAudioFromText = async ({text, fileName}) => {
   try {
+    console.log(text);
     const gtts = new gTTS(text, 'en');
 
-    const file = process.cwd() + '/' + fileName;
+    await gtts.save(fileName);
 
-    await gtts.save(file);
-
-    return {status: 'Success', file};
+    return {status: 'Success', file: fileName};
   } catch (ex) {
     console.log(ex);
 
