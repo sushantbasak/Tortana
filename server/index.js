@@ -1,7 +1,7 @@
 const express = require('express');
 const api = require('./api');
 const appSettings = require('./config');
-const port = appSettings.port || 3000;
+const port = 6222 || appSettings.port;
 const cors = require('cors');
 
 const init = async () => {

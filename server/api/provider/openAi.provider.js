@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const {APIURL} = require('../../constants');
 const appSettings = require('../../config');
-const apiKey = appSettings.apiKey.openAI;
+const apiKey = process.env.OPENAI_API_KEY || appSettings.apiKey.openAI;
 
 const whispherAPIProvider = async ({fileName}) => {
   try {
