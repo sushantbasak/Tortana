@@ -25,18 +25,18 @@ const createAudio = async (req, res) => {
 
     const inputFile = req.file.path;
 
-    // console.log('Req mil gaya');
+    console.log('Req received');
 
     let resp = await getAudioTranscription({fileName: inputFile});
 
     if (resp.status === 'ERROR')
       throw new Error('Speech to Transcript API (Whispher)  is not working');
 
-    // console.log(resp, 'Whisper Complete');
+    console.log(resp, 'Whisper Complete');
 
     prompt.push({'role': 'user', 'content': resp.result});
 
-    // console.log(prompt, 'Intitial Prompt Value');
+    console.log(prompt, 'Intitial Prompt Value');
 
     resp = await getChatCompletion(prompt);
 
@@ -46,24 +46,24 @@ const createAudio = async (req, res) => {
       );
 
     const generateChat = resp.result;
-    // console.log(generateChat, 'Generated Prompt');
+    console.log(generateChat, 'Generated Prompt');
 
     prompt.push(generateChat);
 
-    // console.log(prompt);
+    console.log(prompt);
 
     const text = generateChat.content;
 
     const outputFile = path + '/data/result/' + req.file.filename;
 
-    // console.log(text, 'Text De rhe hai');
+    console.log(text, 'Text De rhe hai');
 
     resp = await getAudioFromText({text, fileName: outputFile});
 
     if (resp.status === 'ERROR')
       throw new Error('Speech from Text API (GTTS) is not working');
 
-    // console.log(resp, 'File Save ho gaya');
+    console.log(resp, 'File Save ho gaya');
 
     res.status(200).send('ok');
   } catch (ex) {
@@ -89,7 +89,8 @@ const getAudio = (req, res) => {
     const CHUNK_SIZE = 10 ** 6; //1 MB
     // console.log(range);
     const start = Number(range.replace(/\D/g, ''));
-    const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+    // const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+    const end = Math.min(audioSize - 1, 9007199254740000);
 
     const contentLength = end - start + 1;
     const headers = {

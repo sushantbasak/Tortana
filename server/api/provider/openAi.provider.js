@@ -15,6 +15,7 @@ const whispherAPIProvider = async ({fileName}) => {
       {
         'file': fileStream,
         'model': 'whisper-1',
+        'language': 'en',
       },
       {
         headers: {

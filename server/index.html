@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Speech to text test</title>
+    <title>TortanaTortana</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
@@ -14,7 +14,7 @@
     <video id="videoPlayer" width="50%" controls>
       <source src="" type="audio/mp3" />
     </video>
-    <h1>Speech to text test</h1>
+    <h1>Tortana</h1>
     <div id="controls">
       <button id="recordButton">Record</button>
       <button id="transcribeButton" disabled>Stop and upload to server</button>
@@ -92,7 +92,7 @@
 
             localStorage.setItem('videoSource', filename);
 
-            location.reload();
+            // location.reload();
           })
           .catch((error) => {
             document.getElementById('output').innerHTML =
