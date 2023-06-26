@@ -25,19 +25,19 @@ const createAudio = async (req, res) => {
 
     const inputFile = req.file.path;
 
-    // console.log('Req mil gaya');
+    console.log('Req mil gaya');
 
     let val = await getAudioTranscription({fileName: inputFile});
 
-    // console.log(val, 'Whisper Complete');
+    console.log(val, 'Whisper Complete');
 
     prompt.push({'role': 'user', 'content': val.result});
 
-    // console.log(prompt, 'Intitial Prompt Value');
+    console.log(prompt, 'Intitial Prompt Value');
 
     const {result: generateChat} = await getChatCompletion(prompt);
 
-    // console.log(generateChat, 'Generated Prompt');
+    console.log(generateChat, 'Generated Prompt');
 
     prompt.push(generateChat);
 
@@ -47,11 +47,11 @@ const createAudio = async (req, res) => {
 
     const outputFile = path + '/data/result/' + req.file.filename;
 
-    // console.log(text, 'Text De rhe hai');
+    console.log(text, 'Text De rhe hai');
 
     val = await getAudioFromText({text, fileName: outputFile});
 
-    // console.log(val, 'File Save ho gaya');
+    console.log(val, 'File Save ho gaya');
 
     res.status(200).send('ok');
   } catch (ex) {
@@ -68,12 +68,17 @@ const getAudio = (req, res) => {
     res.status(400).send('Requires Range header');
   }
 
+  console.log('Load File');
+
   const audioPath = path + '/data/result/' + id;
   const audioSize = fs.statSync(audioPath).size;
   // console.log("size of audio is:", audioSize);
   const CHUNK_SIZE = 10 ** 6; //1 MB
+  console.log(range);
   const start = Number(range.replace(/\D/g, ''));
-  const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+  // const end = Math.min(start + CHUNK_SIZE, audioSize - 1);
+
+  const end = audioSize - 1;
   const contentLength = end - start + 1;
   const headers = {
     'Content-Range': `bytes ${start}-${end}/${audioSize}`,
