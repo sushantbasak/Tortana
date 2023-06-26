@@ -7,4 +7,6 @@ router.use('/health', async (req, res) => {
   });
 });
 
+router.use('/audio', require('./controller/audio.controller'));
+
 module.exports = router;

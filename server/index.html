@@ -27,7 +27,7 @@
 
       if (fileName) {
         // creating the route path
-        let videoSource = 'audio' + '/' + fileName;
+        let videoSource = 'api/audio' + '/' + fileName;
         // Access the video player element
         let videoPlayer = document.getElementById('videoPlayer');
 
@@ -83,7 +83,7 @@
         const formData = new FormData();
         formData.append('audio_data', blob, filename);
 
-        fetch('http://localhost:6222/audio', {
+        fetch('http://localhost:6222/api/audio', {
           method: 'POST',
           body: formData,
         })
