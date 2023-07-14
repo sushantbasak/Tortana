@@ -3,8 +3,7 @@ const fs = require('fs');
 
 const {APIURL} = require('../../constants');
 const appSettings = require('../../config');
-// const apiKey = process.env.OPENAI_API_KEY || appSettings.apiKey.openAI;
-const apiKey = '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';
+const apiKey = process.env.OPENAI_API_KEY || appSettings.apiKey.openAI;
 const {Readable} = require('stream');
 
 const whispherAPIProvider = async (audioBuffer) => {
@@ -32,10 +31,6 @@ const whispherAPIProvider = async (audioBuffer) => {
     return {status: 'SUCCESS', result: resp.data.text};
   } catch (ex) {
     console.log(ex.message);
-
-    console.log('Whispher k ander se');
-
-    // console.log(ex);
 
     return {status: 'ERROR', result: null};
   }
