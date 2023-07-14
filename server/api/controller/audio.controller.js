@@ -8,12 +8,9 @@ const {getAudioTranscription} = require('../service/speechToText.service');
 const {getChatCompletion} = require('../service/chatCompletion.service');
 const {getAudioFromText} = require('../service/textToSpeech.service');
 
-const Storage = multer.diskStorage({
-  destination: path + '/data/uploads',
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
+const {whispherAPIProvider} = require('../provider/openAi.provider');
+
+const Storage = multer.memoryStorage();
 
 const upload = multer({
   storage: Storage,
@@ -23,11 +20,9 @@ const createAudio = async (req, res) => {
   try {
     const prompt = [];
 
-    const inputFile = req.file.path;
+    const audioBuffer = Buffer.from(req.file.buffer);
 
-    console.log('Req received');
-
-    let resp = await getAudioTranscription({fileName: inputFile});
+    let resp = await getAudioTranscription(audioBuffer);
 
     if (resp.status === 'ERROR')
       throw new Error('Speech to Transcript API (Whispher)  is not working');

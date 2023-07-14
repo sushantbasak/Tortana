@@ -1,7 +1,7 @@
 const {whispherAPIProvider} = require('../provider/openAi.provider');
 
-const getAudioTranscription = (file) => {
-  return whispherAPIProvider(file);
+const getAudioTranscription = (buffer) => {
+  return whispherAPIProvider(buffer);
 };
 
 module.exports = {getAudioTranscription};
