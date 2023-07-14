@@ -76,7 +76,7 @@
         const formData = new FormData();
         formData.append('audio_data', blob, filename);
 
-        fetch('http://localhost:6222/api/audio', {
+        fetch('https://tortana.onrender.com:6222/api/audio', {
           method: 'POST',
           body: formData,
         })
