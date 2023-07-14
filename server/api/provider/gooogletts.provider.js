@@ -5,6 +5,7 @@ const textToSpeech = async (text) => {
     // get audio URL
     const url = await googleTTS.getAllAudioUrls(text, {
       lang: 'en',
+      slow: false,
       host: 'https://translate.google.com',
     });
 

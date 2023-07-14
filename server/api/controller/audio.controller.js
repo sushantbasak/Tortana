@@ -21,9 +21,11 @@ const createAudio = async (req, res) => {
     if (resp.status === 'ERROR')
       throw new Error('Speech to Transcript API (Whispher)  is not working');
 
-    // console.log(resp, 'Whisper Complete');
+    console.log(resp, 'Whisper Complete');
 
-    prompt.push({'role': 'user', 'content': resp.result});
+    const instruction = ' Generate response with less than 100 tokens';
+
+    prompt.push({'role': 'user', 'content': resp.result + instruction});
 
     // console.log(prompt, 'Intitial Prompt Value');
 
@@ -46,6 +48,8 @@ const createAudio = async (req, res) => {
     console.log(text, 'Text De rhe hai');
 
     resp = await getAudioFromText(text);
+
+    console.log(resp);
 
     res.status(200).send(resp);
   } catch (ex) {
