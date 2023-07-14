@@ -8,6 +8,8 @@ It utilizes the Whisper API to convert speech to text, generates prompts for the
 
 Tortana's powerful combination of APIs empowers voice-driven applications and virtual assistants with intelligent, context-aware responses and enhances user engagement.
 
+**Demo Video** : https://www.youtube.com/watch?v=dgw6mdB2jWY&t=8s&ab_channel=KevinMartin
+
 ![image](https://github.com/sushantbasak/Tortana/assets/56016930/a5f78be8-7434-4d0e-8860-81c3d29e30f2)
 
 ## :bookmark_tabs: Main Features
