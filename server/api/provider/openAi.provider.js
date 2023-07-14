@@ -38,6 +38,8 @@ const chatGPTProvider = async (prompt) => {
   try {
     const url = APIURL.openAI.chatGPT;
 
+    console.log(prompt);
+
     const resp = await axios.post(
       url,
       {

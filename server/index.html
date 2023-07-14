@@ -98,6 +98,10 @@
           .catch((error) => {
             document.getElementById('output').innerHTML =
               'An error occurred: ' + error;
+
+            playStream(
+              'https://translate.google.com/translate_tts?ie=UTF-8&q=Sorry%20Some%20internal%20Error%20Occurred&tl=en&total=1&idx=0&textlen=34&client=tw-ob&prev=input&ttsspeed=1'
+            );
           });
       }
     </script>
