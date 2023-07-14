@@ -11,9 +11,7 @@
     />
   </head>
   <body style="padding: 50px">
-    <video id="videoPlayer" width="50%" controls>
-      <source src="" type="audio/mp3" />
-    </video>
+    <audio id="audioPlayer" controls></audio>
     <h1>Tortana</h1>
     <div id="controls">
       <button id="recordButton">Record</button>
@@ -22,24 +20,12 @@
     <div id="output"></div>
     <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
     <script>
-      // Retrieve data from localStorage
-      let fileName = localStorage.getItem('videoSource');
-
-      if (fileName) {
-        // creating the route path
-        let videoSource = 'api/audio' + '/' + fileName;
-        // Access the video player element
-        let videoPlayer = document.getElementById('videoPlayer');
-
-        // Update the src attribute with the retrieved data
-        videoPlayer.src = videoSource;
-      }
-
       let rec = null;
       let audioStream = null;
 
       const recordButton = document.getElementById('recordButton');
       const transcribeButton = document.getElementById('transcribeButton');
+      const audioPlayer = document.getElementById('audioPlayer');
 
       recordButton.addEventListener('click', startRecording);
       transcribeButton.addEventListener('click', transcribeText);
@@ -77,6 +63,13 @@
         rec.exportWAV(uploadSoundData);
       }
 
+      function playStream(streamUrl) {
+        audioPlayer.src = streamUrl;
+        audioPlayer.play().catch((error) => {
+          console.error('Error playing audio:', error);
+        });
+      }
+
       function uploadSoundData(blob) {
         const filename = 'sound-file-' + new Date().getTime() + '.wav';
 
@@ -87,16 +80,28 @@
           method: 'POST',
           body: formData,
         })
-          .then(async (result) => {
-            document.getElementById('output').innerHTML = await result.text();
+          .then(async (resp) => {
+            const data = await resp.json();
 
-            localStorage.setItem('videoSource', filename);
+            let transcriptResp = '';
 
-            // location.reload();
+            data.result.forEach((ele) => {
+              transcriptResp += ele.shortText;
+            });
+
+            const {url: streamUrl} = data.result[0];
+
+            document.getElementById('output').innerHTML = transcriptResp;
+
+            playStream(streamUrl);
           })
           .catch((error) => {
             document.getElementById('output').innerHTML =
               'An error occurred: ' + error;
+
+            playStream(
+              'https://translate.google.com/translate_tts?ie=UTF-8&q=Sorry%20Some%20internal%20Error%20Occurred&tl=en&total=1&idx=0&textlen=34&client=tw-ob&prev=input&ttsspeed=1'
+            );
           });
       }
     </script>

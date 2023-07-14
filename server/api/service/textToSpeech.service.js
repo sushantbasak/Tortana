@@ -1,18 +1,7 @@
-const gTTS = require('gtts');
+const {textToSpeech} = require('../provider/gooogletts.provider');
 
-const getAudioFromText = async ({text, fileName}) => {
-  try {
-    console.log(text);
-    const gtts = new gTTS(text, 'en');
-
-    await gtts.save(fileName);
-
-    return {status: 'SUCCESS', file: fileName};
-  } catch (ex) {
-    console.log(ex.message);
-
-    return {status: 'ERROR', file: null};
-  }
+const getAudioFromText = (text) => {
+  return textToSpeech(text);
 };
 
 module.exports = {getAudioFromText};

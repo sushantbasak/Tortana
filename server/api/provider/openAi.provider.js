@@ -1,19 +1,20 @@
 const axios = require('axios');
-const fs = require('fs');
-
 const {APIURL} = require('../../constants');
 const appSettings = require('../../config');
 const apiKey = process.env.OPENAI_API_KEY || appSettings.apiKey.openAI;
+const {Readable} = require('stream');
 
-const whispherAPIProvider = async ({fileName}) => {
+const whispherAPIProvider = async (audioBuffer) => {
   try {
-    const fileStream = fs.createReadStream(fileName);
     const url = APIURL.openAI.whispher;
+
+    const audioReadStream = Readable.from(audioBuffer);
+    audioReadStream.path = `filename.webm`;
 
     const resp = await axios.post(
       url,
       {
-        'file': fileStream,
+        'file': audioReadStream,
         'model': 'whisper-1',
         'language': 'en',
       },
@@ -36,6 +37,8 @@ const whispherAPIProvider = async ({fileName}) => {
 const chatGPTProvider = async (prompt) => {
   try {
     const url = APIURL.openAI.chatGPT;
+
+    console.log(prompt);
 
     const resp = await axios.post(
       url,
