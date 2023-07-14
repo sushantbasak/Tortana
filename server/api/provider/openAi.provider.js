@@ -1,6 +1,4 @@
 const axios = require('axios');
-const fs = require('fs');
-
 const {APIURL} = require('../../constants');
 const appSettings = require('../../config');
 const apiKey = process.env.OPENAI_API_KEY || appSettings.apiKey.openAI;

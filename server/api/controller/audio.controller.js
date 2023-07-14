@@ -12,7 +12,13 @@ const upload = multer({
 
 const createAudio = async (req, res) => {
   try {
-    const prompt = [];
+    const prompt = [
+      {
+        role: 'system',
+        content:
+          'You are an Intelligent Chatbot named Tortana. Answer the user questions accordingly.',
+      },
+    ];
 
     const audioBuffer = Buffer.from(req.file.buffer);
 
@@ -49,7 +55,8 @@ const createAudio = async (req, res) => {
 
     resp = await getAudioFromText(text);
 
-    console.log(resp);
+    if (resp.status === 'ERROR')
+      throw new Error('Text to Speech is not working');
 
     res.status(200).send(resp);
   } catch (ex) {
