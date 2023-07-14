@@ -1,3 +1,6 @@
+// import morgan from 'morgan';
+// import chalk from 'chalk'; // or you can use the require('chalk') syntax too
+
 const morgan = require('morgan');
 const chalk = require('chalk');
 
