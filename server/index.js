@@ -3,6 +3,7 @@ const api = require('./api');
 const appSettings = require('./config');
 const port = 6222 || appSettings.port;
 const cors = require('cors');
+const {morganMiddleware} = require('./utils/morgan.logger');
 
 const init = async () => {
   try {
@@ -13,6 +14,8 @@ const init = async () => {
 
     const jsonParser = express.json();
     app.use(jsonParser);
+
+    app.use(morganMiddleware);
 
     app.use('/api', api);
 
